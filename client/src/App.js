@@ -37,7 +37,25 @@ function App() {
         .then(response => {
           const data = response.data;
           if (data.valid) {
-            setUser(data);
+            // Transform the user data
+            const transformedUser = {
+              ...data,
+              // If email is null but username is an email, use username as email
+              email: data.email || (data.username && data.username.includes('@') ? data.username : null),
+              // Generate a name from the email/username if not provided
+              name: data.name || (() => {
+                const email = data.email || data.username;
+                if (email && email.includes('@')) {
+                  const nameBase = email.split('@')[0].replace(/\./g, ' ');
+                  // Capitalize first letter of each word
+                  return nameBase.split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                }
+                return null;
+              })()
+            };
+            setUser(transformedUser);
           } else {
             setUser(null);
             setJwt(null);
@@ -96,7 +114,16 @@ function App() {
         <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" replace />} />
         
         {/* Protected routes */}
-        <Route path="/" element={user ? <ProtectedPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />} />
+        <Route 
+          path="/" 
+          element={
+            user ? (
+              <ProtectedPage user={user} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } 
+        />
         
         {/* Admin routes */}
         <Route path="/admin" element={isAdmin ? <AdminLayout /> : <Navigate to="/" replace />}>
