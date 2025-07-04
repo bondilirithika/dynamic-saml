@@ -47,7 +47,8 @@ public class SecurityConfig {
                     "/api/auth/custom-login",
                     "/api/auth/validate",
                     "/api/auth/custom-logout",
-                    "/api/auth/options"  // Add this line to permit access to options endpoint
+                    "/api/auth/options",  // Add this line to permit access to options endpoint
+                    "/api/admin/**" // Add this line to allow admin API access without authentication
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -122,7 +123,7 @@ public class SecurityConfig {
                 registry.addMapping("/api/**")
                     .allowedOrigins(
                         "http://localhost:3000",
-                        "https://worcester-links-ss-sponsored.trycloudflare.com"
+                        "https://cancel-whatever-likely-lamps.trycloudflare.com"
                     )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowCredentials(true);

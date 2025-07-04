@@ -104,9 +104,6 @@ function App() {
     );
   }
 
-  // Check if user has admin role
-  const isAdmin = user?.roles?.includes('ADMIN');
-
   return (
     <Router>
       <Routes>
@@ -126,7 +123,7 @@ function App() {
         />
         
         {/* Admin routes */}
-        <Route path="/admin" element={isAdmin ? <AdminLayout /> : <Navigate to="/" replace />}>
+        <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<div>Admin Dashboard</div>} />
           <Route path="saml" element={<SamlProviderList />} />
           <Route path="saml/add" element={<SamlProviderForm />} />
