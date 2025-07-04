@@ -82,6 +82,9 @@ public class SamlAdminController {
                 return ResponseEntity.notFound().build();
             }
             
+            // The key fix: ensure we're using the exact same ID to avoid duplicates
+            provider.setId(id);
+            
             SamlProviderConfig savedProvider = configService.saveProvider(provider);
             
             // Refresh SAML configurations

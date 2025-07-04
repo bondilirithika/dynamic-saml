@@ -71,10 +71,10 @@ public class SamlConfigurationService {
             loadProviders();
         }
         
-        // Remove existing provider with same ID if it exists
+        // Explicitly remove the provider with the same ID first
         providersConfig.getProviders().removeIf(p -> p.getId().equals(provider.getId()));
         
-        // Add the new/updated provider
+        // Add the updated provider
         providersConfig.getProviders().add(provider);
         
         // Save to YAML file
