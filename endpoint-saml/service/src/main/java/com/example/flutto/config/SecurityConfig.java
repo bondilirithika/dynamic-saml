@@ -20,35 +20,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
- 
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtService jwtService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RelyingPartyRegistrationRepository relyingPartyRegistrationRepository;
 
-    public SecurityConfig(JwtService jwtService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtService jwtService, JwtAuthenticationFilter jwtAuthenticationFilter, RelyingPartyRegistrationRepository relyingPartyRegistrationRepository) {
         this.jwtService = jwtService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.relyingPartyRegistrationRepository = relyingPartyRegistrationRepository;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // <--- Disable CSRF for now
+            .csrf(csrf -> csrf.disable())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers(
                     "/", "/login", "/error", "/css/**", "/js/**", "/favicon.ico",
-                    "/api/auth/custom-login",    // <-- Add this new endpoint
+                    "/api/auth/custom-login",
                     "/api/auth/validate",
-                    "/api/auth/custom-logout"
+                    "/api/auth/custom-logout",
+                    "/api/auth/options"  // Add this line to permit access to options endpoint
                 ).permitAll()
                 .anyRequest().authenticated()
             )
             .saml2Login(saml2 -> saml2
-                // .loginPage("/login")
+                .relyingPartyRegistrationRepository(relyingPartyRegistrationRepository)
                 .successHandler(samlSuccessHandler())
             )
             .logout(logout -> logout
@@ -116,7 +120,10 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                    .allowedOrigins("http://localhost:3000","https://fffb-122-179-45-72.ngrok-free.app")
+                    .allowedOrigins(
+                        "http://localhost:3000",
+                        "https://worcester-links-ss-sponsored.trycloudflare.com"
+                    )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowCredentials(true);
             }
