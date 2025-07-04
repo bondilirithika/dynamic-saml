@@ -47,7 +47,8 @@ public class SecurityConfig {
                     "/api/auth/custom-login",
                     "/api/auth/validate",
                     "/api/auth/custom-logout",
-                    "/api/auth/options"  // Add this line to permit access to options endpoint
+                    "/api/auth/options",
+                    "/api/admin/**"  // Add this line to permit access to admin endpoints
                 ).permitAll()
                 .anyRequest().authenticated()
             )

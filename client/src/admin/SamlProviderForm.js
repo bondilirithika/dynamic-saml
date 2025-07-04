@@ -187,7 +187,8 @@ const SamlProviderForm = () => {
       setSpMetadata({
         id: response.data.id,
         spEntityId: response.data.spEntityId,
-        acsUrl: `/login/saml2/sso/${response.data.id}`
+        // Construct full ACS URL using the base URL and provider ID
+        acsUrl: `${response.data.spEntityId.split('/saml2')[0]}/login/saml2/sso/${response.data.id}`
       });
       
       setLoading(false);
