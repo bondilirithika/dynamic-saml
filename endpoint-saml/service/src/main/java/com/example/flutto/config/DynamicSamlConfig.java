@@ -78,29 +78,50 @@ public class DynamicSamlConfig {
         // Try to build registrations from enabled providers
         for (SamlProviderConfig provider : providers) {
             try {
+                // Print more details about the provider
+                logger.info("Processing provider: {} with entityId: {}", 
+                    provider.getId(), provider.getSpEntityId());
+                
                 RelyingPartyRegistration registration = buildRegistration(provider);
                 registrations.add(registration);
                 logger.info("Successfully built registration for provider: {}", provider.getId());
             } catch (Exception e) {
-                logger.error("Failed to build registration for provider {}: {}", provider.getId(), e.getMessage(), e);
+                logger.error("Failed to build registration for provider {}: {}", 
+                    provider.getId(), e.getMessage(), e);
             }
         }
         
-        // If no valid registrations, create a dummy one
+        // Only add a dummy if we're in development mode and have no registrations
         if (registrations.isEmpty()) {
             logger.warn("No valid SAML providers found. Creating a dummy registration for startup.");
             
-            RelyingPartyRegistration dummyRegistration = RelyingPartyRegistration.withRegistrationId("dummy")
-                .assertionConsumerServiceLocation("{baseUrl}/login/saml2/sso/dummy")
-                .entityId("{baseUrl}/saml2/service-provider-metadata/dummy")
-                .assertingPartyDetails(party -> party
-                    .entityId("https://example.com/dummy")
-                    .singleSignOnServiceLocation("https://example.com/dummy")
-                    .singleSignOnServiceBinding(Saml2MessageBinding.REDIRECT)
-                )
-                .build();
-            
-            registrations.add(dummyRegistration);
+            // Create a dummy registration that won't interfere with real ones
+            try {
+                // Generate credentials for the dummy as well
+                KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+                keyPairGenerator.initialize(2048);
+                KeyPair keyPair = keyPairGenerator.generateKeyPair();
+                
+                X509Certificate certificate = generateSelfSignedCertificate(keyPair);
+                RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+                
+                Saml2X509Credential signingCredential = Saml2X509Credential.signing(privateKey, certificate);
+                
+                RelyingPartyRegistration dummyRegistration = RelyingPartyRegistration.withRegistrationId("dummy")
+                    .assertionConsumerServiceLocation("{baseUrl}/login/saml2/sso/dummy")
+                    .entityId("{baseUrl}/saml2/service-provider-metadata/dummy")
+                    .signingX509Credentials(c -> c.add(signingCredential))
+                    .assertingPartyDetails(party -> party
+                        .entityId("https://example.com/dummy")
+                        .singleSignOnServiceLocation("https://example.com/dummy")
+                        .singleSignOnServiceBinding(Saml2MessageBinding.REDIRECT)
+                    )
+                    .build();
+                
+                registrations.add(dummyRegistration);
+            } catch (Exception e) {
+                logger.error("Failed to create dummy registration", e);
+            }
         }
         
         return new InMemoryRelyingPartyRegistrationRepository(
@@ -255,23 +276,24 @@ public class DynamicSamlConfig {
             keyPairGenerator.initialize(2048);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             
-            // Simple X509 certificate creation (in production, use proper libraries like Bouncy Castle)
             X509Certificate certificate = generateSelfSignedCertificate(keyPair);
-            
             RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        
-        // Create the credential and explicitly add it
-        Saml2X509Credential signingCredential = Saml2X509Credential.signing(privateKey, certificate);
-        
-        // Add to builder - IMPORTANT: must use this exact format
-        builder.signingX509Credentials(c -> c.add(signingCredential));
-        
-        logger.info("Successfully generated and added signing credentials");
-    } catch (Exception e) {
-        logger.error("Failed to generate signing credentials", e);
-        throw new RuntimeException("Failed to generate signing credentials", e);
+            
+            //Create the credential and explicitly add it
+            Saml2X509Credential signingCredential = Saml2X509Credential.signing(privateKey, certificate);
+            
+            // Add to builder - Explicitly as a collection rather than consumer
+            builder.signingX509Credentials(credentials -> {
+                credentials.add(signingCredential);
+                logger.info("Added signing credential to builder");
+            });
+            
+            logger.info("Successfully generated and added signing credentials");
+        } catch (Exception e) {
+            logger.error("Failed to generate signing credentials", e);
+            throw new RuntimeException("Failed to generate signing credentials", e);
+        }
     }
-}
 
     /**
      * Generates a self-signed X509Certificate for the given KeyPair.

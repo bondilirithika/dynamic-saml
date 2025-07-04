@@ -1,10 +1,11 @@
+---
 providers:
   - id: google
     displayName: "Google Workspace"
     enabled: true
     metadataSource: "manual"
     # Important: Use the exact entity ID you registered with Google
-    spEntityId: "https://cancel-whatever-likely-lamps.trycloudflare.com/saml2/service-provider-metadata/google"
+    spEntityId: "https://worcester-links-ss-sponsored.trycloudflare.com/saml2/service-provider-metadata/google"
     # Make sure this IdP login URL is correct from Google
     idpLoginUrl: "https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h"
     idpLogoutUrl: null

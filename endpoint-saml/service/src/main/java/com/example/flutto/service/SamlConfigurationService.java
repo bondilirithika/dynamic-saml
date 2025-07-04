@@ -120,8 +120,23 @@ public class SamlConfigurationService {
      * Saves providers to the YAML file
      */
     private synchronized void saveProvidersToYaml() throws IOException {
-        File file = yamlResource.getFile();
-        yamlMapper.writeValue(file, providersConfig);
+        //Get the runtime file (in target/classes)
+        File runtimeFile = yamlResource.getFile();
+        
+        // Identify the source file location
+        String sourceFilePath = System.getProperty("user.dir") + 
+            "/src/main/resources/saml-providers.yaml";
+        File sourceFile = new File(sourceFilePath);
+        
+        // Log both locations
+        logger.info("Runtime YAML file path: {}", runtimeFile.getAbsolutePath());
+        logger.info("Source YAML file path: {}", sourceFile.getAbsolutePath());
+        
+        // Save to both locations
+        yamlMapper.writeValue(runtimeFile, providersConfig);
+        yamlMapper.writeValue(sourceFile, providersConfig);
+        
+        logger.info("SAML provider configuration saved to both runtime and source locations");
     }
     
     /**

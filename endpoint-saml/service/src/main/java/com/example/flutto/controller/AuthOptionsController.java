@@ -36,16 +36,18 @@ public class AuthOptionsController {
         logger.info("Found {} enabled providers", providers.size());
         
         // If no providers, add a default one for testing
-        if (providers.isEmpty()) {
-            logger.warn("No providers found, adding test Google provider");
-            Map<String, String> googleProvider = new HashMap<>();
-            googleProvider.put("id", "google");
-            googleProvider.put("displayName", "Google Workspace");
-            googleProvider.put("type", "saml");
-            googleProvider.put("iconUrl", "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg");
+        // /*
+        // if (providers.isEmpty()) {
+        //     logger.warn("No providers found, adding test Google provider");
+        //     Map<String, String> googleProvider = new HashMap<>();
+        //     googleProvider.put("id", "google");
+        //     googleProvider.put("displayName", "Google Workspace");
+        //     googleProvider.put("type", "saml");
+        //     googleProvider.put("iconUrl", "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg");
             
-            return ResponseEntity.ok(Collections.singletonList(googleProvider));
-        }
+        //     return ResponseEntity.ok(Collections.singletonList(googleProvider));
+        // }
+        // */
         
         // Original code
         List<Map<String, String>> options = providers.stream()
