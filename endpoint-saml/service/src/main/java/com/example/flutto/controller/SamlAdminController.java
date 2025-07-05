@@ -5,16 +5,21 @@ import com.example.flutto.model.SamlProviderConfig;
 import com.example.flutto.service.SamlConfigurationService;
 import com.example.flutto.service.SamlMetadataService;
 import jakarta.validation.Valid;
+import jakarta.validation.ConstraintViolation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import jakarta.validation.Validator;
 
 @RestController
 @RequestMapping("/api/admin/saml")
@@ -25,15 +30,21 @@ public class SamlAdminController {
     private final SamlConfigurationService configService;
     private final SamlMetadataService metadataService;
     private final DynamicSamlConfig samlConfig;
+    private final Environment environment;
+    
+    @Autowired
+    private Validator validator;
     
     @Autowired
     public SamlAdminController(
             SamlConfigurationService configService,
             SamlMetadataService metadataService,
-            DynamicSamlConfig samlConfig) {
+            DynamicSamlConfig samlConfig,
+            Environment environment) {
         this.configService = configService;
         this.metadataService = metadataService;
         this.samlConfig = samlConfig;
+        this.environment = environment;
     }
     
     @GetMapping("/providers")
@@ -49,29 +60,56 @@ public class SamlAdminController {
     }
     
     @PostMapping("/providers")
-    public ResponseEntity<SamlProviderConfig> createProvider(@Valid @RequestBody SamlProviderConfig provider) {
+    public ResponseEntity<SamlProviderConfig> createProvider(@RequestBody SamlProviderConfig provider) {
         try {
+            logger.info("Creating new SAML provider: {}", provider.getDisplayName());
+            
             // Generate an ID if none provided
             if (provider.getId() == null || provider.getId().isEmpty()) {
                 provider.setId(generateProviderId(provider.getDisplayName()));
+                logger.info("Generated provider ID: {}", provider.getId());
+            }
+            
+            // Set proper Entity ID based on application base URL
+            String baseUrl = environment.getProperty("saml.service-provider.base-url");
+            if (baseUrl == null) {
+                baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+                logger.info("Using current context URL as base: {}", baseUrl);
+            }
+            
+            // Set entity ID BEFORE validation
+            provider.setSpEntityId(baseUrl + "/saml2/service-provider-metadata/" + provider.getId());
+            logger.info("Set entity ID to: {}", provider.getSpEntityId());
+            
+            // Manual validation AFTER setting required fields
+            Set<ConstraintViolation<SamlProviderConfig>> violations = validator.validate(provider);
+            if (!violations.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (ConstraintViolation<SamlProviderConfig> violation : violations) {
+                    sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("; ");
+                }
+                logger.error("Validation errors: {}", sb.toString());
+                return ResponseEntity.badRequest().body(null);
             }
             
             SamlProviderConfig savedProvider = configService.saveProvider(provider);
+            logger.info("Provider saved successfully");
             
             // Refresh SAML configurations
             samlConfig.refreshRegistrations();
+            logger.info("SAML registrations refreshed");
             
             return ResponseEntity.ok(savedProvider);
         } catch (Exception e) {
-            logger.error("Error creating SAML provider", e);
-            return ResponseEntity.badRequest().build();
+            logger.error("Error creating SAML provider: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(null);
         }
     }
     
     @PutMapping("/providers/{id}")
     public ResponseEntity<SamlProviderConfig> updateProvider(
             @PathVariable String id, 
-            @Valid @RequestBody SamlProviderConfig provider) {
+            @RequestBody SamlProviderConfig provider) {
         
         try {
             if (!id.equals(provider.getId())) {
@@ -82,8 +120,30 @@ public class SamlAdminController {
                 return ResponseEntity.notFound().build();
             }
             
-            // The key fix: ensure we're using the exact same ID to avoid duplicates
+            // Ensure we're using the exact same ID
             provider.setId(id);
+            
+            // Update the Entity ID with the current backend URL
+            String baseUrl = environment.getProperty("saml.service-provider.base-url");
+            if (baseUrl == null) {
+                baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+                logger.info("Using current context URL as base: {}", baseUrl);
+            }
+            
+            // Set the Entity ID to use the current backend URL
+            provider.setSpEntityId(baseUrl + "/saml2/service-provider-metadata/" + provider.getId());
+            logger.info("Updated entity ID to: {}", provider.getSpEntityId());
+            
+            // Manual validation AFTER setting required fields
+            Set<ConstraintViolation<SamlProviderConfig>> violations = validator.validate(provider);
+            if (!violations.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (ConstraintViolation<SamlProviderConfig> violation : violations) {
+                    sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("; ");
+                }
+                logger.error("Validation errors: {}", sb.toString());
+                return ResponseEntity.badRequest().body(null);
+            }
             
             SamlProviderConfig savedProvider = configService.saveProvider(provider);
             
@@ -93,7 +153,7 @@ public class SamlAdminController {
             return ResponseEntity.ok(savedProvider);
         } catch (Exception e) {
             logger.error("Error updating SAML provider", e);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(null);
         }
     }
     

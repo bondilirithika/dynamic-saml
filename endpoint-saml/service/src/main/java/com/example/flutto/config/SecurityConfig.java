@@ -123,7 +123,7 @@ public class SecurityConfig {
                 registry.addMapping("/api/**")
                     .allowedOrigins(
                         "http://localhost:3000",
-                        "https://cancel-whatever-likely-lamps.trycloudflare.com"
+                        "https://northern-dealer-many-dubai.trycloudflare.com"
                     )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowCredentials(true);

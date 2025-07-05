@@ -21,7 +21,6 @@ const SamlProviderForm = () => {
     metadataSource: 'manual',
     metadataUrl: '',
     metadataXml: '',
-    spEntityId: 'https://www.flutto.ai/',
     idpLoginUrl: '',
     idpLogoutUrl: '',
     idpCertificate: '',
@@ -155,6 +154,7 @@ const SamlProviderForm = () => {
         idpLogoutUrl: response.data.idpLogoutUrl || prev.idpLogoutUrl,
         idpCertificate: response.data.idpCertificate || prev.idpCertificate,
         nameIdFormat: response.data.nameIdFormat || prev.nameIdFormat
+        // Notice: we're not setting spEntityId from the response
       }));
       
       setError(null);
@@ -180,7 +180,14 @@ const SamlProviderForm = () => {
       
       const method = isUpdate ? 'put' : 'post';
       
-      const response = await axios[method](url, formData);
+      // For updates, create a copy without modifying spEntityId
+      // For new providers, create a copy without spEntityId
+      const formDataToSubmit = { ...formData };
+      if (!isUpdate && formDataToSubmit.spEntityId) {
+        delete formDataToSubmit.spEntityId;
+      }
+      
+      const response = await axios[method](url, formDataToSubmit);
       
       // Show success message and SP details
       setShowSpMetadata(true);
@@ -322,20 +329,6 @@ const SamlProviderForm = () => {
                 />
                 <Form.Text className="text-muted">
                   Optional URL to an icon for this provider (recommended size: 24x24px)
-                </Form.Text>
-              </Form.Group>
-              
-              <Form.Group className="mb-3">
-                <Form.Label>Service Provider Entity ID *</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="spEntityId"
-                  value={formData.spEntityId || ''}
-                  onChange={handleChange}
-                  required
-                />
-                <Form.Text className="text-muted">
-                  The entity ID for your service (usually your application URL)
                 </Form.Text>
               </Form.Group>
             </Tab>

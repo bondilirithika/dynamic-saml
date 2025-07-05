@@ -1,58 +1,234 @@
 ---
 providers:
-  - id: google
-    displayName: "Google Workspace"
-    enabled: true
-    metadataSource: "manual"
-    # Important: Use the exact entity ID you registered with Google
-    spEntityId: "https://worcester-links-ss-sponsored.trycloudflare.com/saml2/service-provider-metadata/google"
-    # Make sure this IdP login URL is correct from Google
-    idpLoginUrl: "https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h"
-    idpLogoutUrl: null
-    idpCertificate: |-
-      -----BEGIN CERTIFICATE-----
-      MIIDdDCCAlygAwIBAgIGAZWx/T3MMA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ
-      bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv
-      b2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjUwMzIw
-      MDUxODM4WhcNMzAwMzE5MDUxODM4WjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN
-      TW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx
-      CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-      MIIBCgKCAQEArsYIcAJd5oUmNkjlKoiaJMYTBGZef7S1q4XihyrXxYoG2ruIfhkmwMEhXjsuIxbh
-      3Q+ZevQN0F6dYH9nTjHc1Orb5jkwX1Hnuq2cMxOTiN4me0tUZFQLU2Z6XBEQK8RC/7FQxyAQfmFj
-      ajze1fGk7mzMIzyJwTy7Pn/yhsQ/Sj254MJsZe4LS1eXLgw4in1X6wOJB/DyyYjYMubAMPlWEDaZ
-      LPIdXtHyFkDnqHXUpiwowOxfSlHcplqm1o2/9o5+fLY1xNVkZLRGoJ5yRIZtg4kxRSsycIG0hlMa
-      vEb0EU9YSUbMfw/y/TtkD/l9CQji6yOPbgo58u49lQRTjxuVQQIDAQABMA0GCSqGSIb3DQEBCwUA
-      A4IBAQA1LjKe8tCDPwGP4E6mWQkW7drF1NoOFwOiGoH5kTwF5Q9rjQ57kxJGYHjp5WfZoizO4Aqe
-      JvdC8F7FeDhQe5XXnb5/fCEmt9pYbNGvR1wUROwrR44fmAsC64JeB1cbT+aTTRIO88vKars3X/7Q
-      G04VNhXny//e+kHW/KXGSwcnzKd5oImnfzaIKB+0Jaa76+xRLLPlkcj5nkO800qVUxcIGrrIOQTL
-      iyGyAGmSLPPm/39i07m+ytaTQ9z0o4YeEJMcoLMyEbDxjKBwMztjDAHjMigqVPJonypFko3RRiuj
-      gInJ4SI4FQVjeH90MxyhlaOw0EYmedCaohsngkbWrCsT
-      -----END CERTIFICATE-----
-    nameIdFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-    limitSelfRegistration: false
-    customIconUrl: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-    signAuthnRequests: false
-    requireSignedResponses: true
-    requireEncryptedResponses: false
-    spCertificate: null
-    spPrivateKey: null
-    digestAlgorithm: "SHA-1"
-    signatureAlgorithm: "RSA-SHA1"
-    attributeMappings:
-      username: ["mail", "email", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"]
-      email: ["mail", "email", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"]
-      firstName: ["givenName", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"]
-      lastName: ["sn", "surname", "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"]
-    requestedAttributes:
-      username:
-        name: "mail"
-        format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
-      email:
-        name: "mail"
-        format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
-      firstName:
-        name: "givenName"
-        format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
-      lastName:
-        name: "sn"
-        format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+- id: "zenv"
+  displayName: "ZENV"
+  metadataSource: "xml"
+  metadataUrl: ""
+  metadataXml: "<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\"\
+    \ entityID=\"https://accounts.google.com/o/saml2?idpid=C04jeke9h\" validUntil=\"\
+    2030-03-19T05:18:38.000Z\">\n<md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\"\
+    \ protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n<md:KeyDescriptor\
+    \ use=\"signing\">\n<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\
+    >\n<ds:X509Data>\n<ds:X509Certificate>MIIDdDCCAlygAwIBAgIGAZWx/T3MMA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ\
+    \ bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv\
+    \ b2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjUwMzIw\
+    \ MDUxODM4WhcNMzAwMzE5MDUxODM4WjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN\
+    \ TW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx\
+    \ CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\
+    \ MIIBCgKCAQEArsYIcAJd5oUmNkjlKoiaJMYTBGZef7S1q4XihyrXxYoG2ruIfhkmwMEhXjsuIxbh\
+    \ 3Q+ZevQN0F6dYH9nTjHc1Orb5jkwX1Hnuq2cMxOTiN4me0tUZFQLU2Z6XBEQK8RC/7FQxyAQfmFj\
+    \ ajze1fGk7mzMIzyJwTy7Pn/yhsQ/Sj254MJsZe4LS1eXLgw4in1X6wOJB/DyyYjYMubAMPlWEDaZ\
+    \ LPIdXtHyFkDnqHXUpiwowOxfSlHcplqm1o2/9o5+fLY1xNVkZLRGoJ5yRIZtg4kxRSsycIG0hlMa\
+    \ vEb0EU9YSUbMfw/y/TtkD/l9CQji6yOPbgo58u49lQRTjxuVQQIDAQABMA0GCSqGSIb3DQEBCwUA\
+    \ A4IBAQA1LjKe8tCDPwGP4E6mWQkW7drF1NoOFwOiGoH5kTwF5Q9rjQ57kxJGYHjp5WfZoizO4Aqe\
+    \ JvdC8F7FeDhQe5XXnb5/fCEmt9pYbNGvR1wUROwrR44fmAsC64JeB1cbT+aTTRIO88vKars3X/7Q\
+    \ G04VNhXny//e+kHW/KXGSwcnzKd5oImnfzaIKB+0Jaa76+xRLLPlkcj5nkO800qVUxcIGrrIOQTL\
+    \ iyGyAGmSLPPm/39i07m+ytaTQ9z0o4YeEJMcoLMyEbDxjKBwMztjDAHjMigqVPJonypFko3RRiuj\
+    \ gInJ4SI4FQVjeH90MxyhlaOw0EYmedCaohsngkbWrCsT</ds:X509Certificate>\n</ds:X509Data>\n\
+    </ds:KeyInfo>\n</md:KeyDescriptor>\n<md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>\n\
+    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"\
+    \ Location=\"https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h\"/>\n<md:SingleSignOnService\
+    \ Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h\"\
+    />\n</md:IDPSSODescriptor>\n</md:EntityDescriptor>"
+  spEntityId: "https://northern-dealer-many-dubai.trycloudflare.com/saml2/service-provider-metadata/zenv"
+  idpLoginUrl: "https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h"
+  idpLogoutUrl: ""
+  idpCertificate: "-----BEGIN CERTIFICATE-----\nMIIDdDCCAlygAwIBAgIGAZWx/T3MMA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ\
+    \ bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv\
+    \ b2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjUwMzIw\
+    \ MDUxODM4WhcNMzAwMzE5MDUxODM4WjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN\
+    \ TW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx\
+    \ CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\
+    \ MIIBCgKCAQEArsYIcAJd5oUmNkjlKoiaJMYTBGZef7S1q4XihyrXxYoG2ruIfhkmwMEhXjsuIxbh\
+    \ 3Q+ZevQN0F6dYH9nTjHc1Orb5jkwX1Hnuq2cMxOTiN4me0tUZFQLU2Z6XBEQK8RC/7FQxyAQfmFj\
+    \ ajze1fGk7mzMIzyJwTy7Pn/yhsQ/Sj254MJsZe4LS1eXLgw4in1X6wOJB/DyyYjYMubAMPlWEDaZ\
+    \ LPIdXtHyFkDnqHXUpiwowOxfSlHcplqm1o2/9o5+fLY1xNVkZLRGoJ5yRIZtg4kxRSsycIG0hlMa\
+    \ vEb0EU9YSUbMfw/y/TtkD/l9CQji6yOPbgo58u49lQRTjxuVQQIDAQABMA0GCSqGSIb3DQEBCwUA\
+    \ A4IBAQA1LjKe8tCDPwGP4E6mWQkW7drF1NoOFwOiGoH5kTwF5Q9rjQ57kxJGYHjp5WfZoizO4Aqe\
+    \ JvdC8F7FeDhQe5XXnb5/fCEmt9pYbNGvR1wUROwrR44fmAsC64JeB1cbT+aTTRIO88vKars3X/7Q\
+    \ G04VNhXny//e+kHW/KXGSwcnzKd5oImnfzaIKB+0Jaa76+xRLLPlkcj5nkO800qVUxcIGrrIOQTL\
+    \ iyGyAGmSLPPm/39i07m+ytaTQ9z0o4YeEJMcoLMyEbDxjKBwMztjDAHjMigqVPJonypFko3RRiuj\
+    \ gInJ4SI4FQVjeH90MxyhlaOw0EYmedCaohsngkbWrCsT\n-----END CERTIFICATE-----"
+  nameIdFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+  limitSelfRegistration: false
+  customIconUrl: ""
+  signAuthnRequests: false
+  requireSignedResponses: true
+  requireEncryptedResponses: false
+  spCertificate: ""
+  spPrivateKey: ""
+  digestAlgorithm: "SHA-1"
+  signatureAlgorithm: "RSA-SHA1"
+  attributeMappings:
+    username:
+    - "mail"
+    - "email"
+    email:
+    - "mail"
+    - "email"
+    firstName:
+    - "givenName"
+    lastName:
+    - "sn"
+  requestedAttributes:
+    username:
+      name: "mail"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    email:
+      name: "mail"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    firstName:
+      name: "givenName"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    lastName:
+      name: "sn"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+  enabled: true
+- id: "google"
+  displayName: "Google Workspace"
+  metadataSource: "manual"
+  metadataUrl: null
+  metadataXml: null
+  spEntityId: "https://northern-dealer-many-dubai.trycloudflare.com/saml2/service-provider-metadata/google"
+  idpLoginUrl: "https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h"
+  idpLogoutUrl: null
+  idpCertificate: "-----BEGIN CERTIFICATE-----\nMIIDdDCCAlygAwIBAgIGAZWx/T3MMA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ\n\
+    bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv\n\
+    b2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjUwMzIw\n\
+    MDUxODM4WhcNMzAwMzE5MDUxODM4WjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN\n\
+    TW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx\n\
+    CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n\
+    MIIBCgKCAQEArsYIcAJd5oUmNkjlKoiaJMYTBGZef7S1q4XihyrXxYoG2ruIfhkmwMEhXjsuIxbh\n\
+    3Q+ZevQN0F6dYH9nTjHc1Orb5jkwX1Hnuq2cMxOTiN4me0tUZFQLU2Z6XBEQK8RC/7FQxyAQfmFj\n\
+    ajze1fGk7mzMIzyJwTy7Pn/yhsQ/Sj254MJsZe4LS1eXLgw4in1X6wOJB/DyyYjYMubAMPlWEDaZ\n\
+    LPIdXtHyFkDnqHXUpiwowOxfSlHcplqm1o2/9o5+fLY1xNVkZLRGoJ5yRIZtg4kxRSsycIG0hlMa\n\
+    vEb0EU9YSUbMfw/y/TtkD/l9CQji6yOPbgo58u49lQRTjxuVQQIDAQABMA0GCSqGSIb3DQEBCwUA\n\
+    A4IBAQA1LjKe8tCDPwGP4E6mWQkW7drF1NoOFwOiGoH5kTwF5Q9rjQ57kxJGYHjp5WfZoizO4Aqe\n\
+    JvdC8F7FeDhQe5XXnb5/fCEmt9pYbNGvR1wUROwrR44fmAsC64JeB1cbT+aTTRIO88vKars3X/7Q\n\
+    G04VNhXny//e+kHW/KXGSwcnzKd5oImnfzaIKB+0Jaa76+xRLLPlkcj5nkO800qVUxcIGrrIOQTL\n\
+    iyGyAGmSLPPm/39i07m+ytaTQ9z0o4YeEJMcoLMyEbDxjKBwMztjDAHjMigqVPJonypFko3RRiuj\n\
+    gInJ4SI4FQVjeH90MxyhlaOw0EYmedCaohsngkbWrCsT\n-----END CERTIFICATE-----"
+  nameIdFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+  limitSelfRegistration: false
+  customIconUrl: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+  signAuthnRequests: false
+  requireSignedResponses: true
+  requireEncryptedResponses: false
+  spCertificate: null
+  spPrivateKey: null
+  digestAlgorithm: "SHA-1"
+  signatureAlgorithm: "RSA-SHA1"
+  attributeMappings:
+    username:
+    - "mail"
+    - "email"
+    - "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+    email:
+    - "mail"
+    - "email"
+    - "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+    firstName:
+    - "givenName"
+    - "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"
+    lastName:
+    - "sn"
+    - "surname"
+    - "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"
+  requestedAttributes:
+    username:
+      name: "mail"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    email:
+      name: "mail"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    firstName:
+      name: "givenName"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    lastName:
+      name: "sn"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+  enabled: true
+- id: "rithika"
+  displayName: "rithika"
+  metadataSource: "xml"
+  metadataUrl: ""
+  metadataXml: "<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\"\
+    \ entityID=\"https://accounts.google.com/o/saml2?idpid=C04jeke9h\" validUntil=\"\
+    2030-03-19T05:18:38.000Z\">\n<md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\"\
+    \ protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n<md:KeyDescriptor\
+    \ use=\"signing\">\n<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\
+    >\n<ds:X509Data>\n<ds:X509Certificate>MIIDdDCCAlygAwIBAgIGAZWx/T3MMA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ\
+    \ bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv\
+    \ b2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjUwMzIw\
+    \ MDUxODM4WhcNMzAwMzE5MDUxODM4WjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN\
+    \ TW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx\
+    \ CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\
+    \ MIIBCgKCAQEArsYIcAJd5oUmNkjlKoiaJMYTBGZef7S1q4XihyrXxYoG2ruIfhkmwMEhXjsuIxbh\
+    \ 3Q+ZevQN0F6dYH9nTjHc1Orb5jkwX1Hnuq2cMxOTiN4me0tUZFQLU2Z6XBEQK8RC/7FQxyAQfmFj\
+    \ ajze1fGk7mzMIzyJwTy7Pn/yhsQ/Sj254MJsZe4LS1eXLgw4in1X6wOJB/DyyYjYMubAMPlWEDaZ\
+    \ LPIdXtHyFkDnqHXUpiwowOxfSlHcplqm1o2/9o5+fLY1xNVkZLRGoJ5yRIZtg4kxRSsycIG0hlMa\
+    \ vEb0EU9YSUbMfw/y/TtkD/l9CQji6yOPbgo58u49lQRTjxuVQQIDAQABMA0GCSqGSIb3DQEBCwUA\
+    \ A4IBAQA1LjKe8tCDPwGP4E6mWQkW7drF1NoOFwOiGoH5kTwF5Q9rjQ57kxJGYHjp5WfZoizO4Aqe\
+    \ JvdC8F7FeDhQe5XXnb5/fCEmt9pYbNGvR1wUROwrR44fmAsC64JeB1cbT+aTTRIO88vKars3X/7Q\
+    \ G04VNhXny//e+kHW/KXGSwcnzKd5oImnfzaIKB+0Jaa76+xRLLPlkcj5nkO800qVUxcIGrrIOQTL\
+    \ iyGyAGmSLPPm/39i07m+ytaTQ9z0o4YeEJMcoLMyEbDxjKBwMztjDAHjMigqVPJonypFko3RRiuj\
+    \ gInJ4SI4FQVjeH90MxyhlaOw0EYmedCaohsngkbWrCsT</ds:X509Certificate>\n</ds:X509Data>\n\
+    </ds:KeyInfo>\n</md:KeyDescriptor>\n<md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>\n\
+    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"\
+    \ Location=\"https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h\"/>\n<md:SingleSignOnService\
+    \ Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h\"\
+    />\n</md:IDPSSODescriptor>\n</md:EntityDescriptor>"
+  spEntityId: "https://northern-dealer-many-dubai.trycloudflare.com/saml2/service-provider-metadata/rithika"
+  idpLoginUrl: "https://accounts.google.com/o/saml2/idp?idpid=C04jeke9h"
+  idpLogoutUrl: ""
+  idpCertificate: "-----BEGIN CERTIFICATE-----\nMIIDdDCCAlygAwIBAgIGAZWx/T3MMA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ\
+    \ bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv\
+    \ b2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjUwMzIw\
+    \ MDUxODM4WhcNMzAwMzE5MDUxODM4WjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN\
+    \ TW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx\
+    \ CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\
+    \ MIIBCgKCAQEArsYIcAJd5oUmNkjlKoiaJMYTBGZef7S1q4XihyrXxYoG2ruIfhkmwMEhXjsuIxbh\
+    \ 3Q+ZevQN0F6dYH9nTjHc1Orb5jkwX1Hnuq2cMxOTiN4me0tUZFQLU2Z6XBEQK8RC/7FQxyAQfmFj\
+    \ ajze1fGk7mzMIzyJwTy7Pn/yhsQ/Sj254MJsZe4LS1eXLgw4in1X6wOJB/DyyYjYMubAMPlWEDaZ\
+    \ LPIdXtHyFkDnqHXUpiwowOxfSlHcplqm1o2/9o5+fLY1xNVkZLRGoJ5yRIZtg4kxRSsycIG0hlMa\
+    \ vEb0EU9YSUbMfw/y/TtkD/l9CQji6yOPbgo58u49lQRTjxuVQQIDAQABMA0GCSqGSIb3DQEBCwUA\
+    \ A4IBAQA1LjKe8tCDPwGP4E6mWQkW7drF1NoOFwOiGoH5kTwF5Q9rjQ57kxJGYHjp5WfZoizO4Aqe\
+    \ JvdC8F7FeDhQe5XXnb5/fCEmt9pYbNGvR1wUROwrR44fmAsC64JeB1cbT+aTTRIO88vKars3X/7Q\
+    \ G04VNhXny//e+kHW/KXGSwcnzKd5oImnfzaIKB+0Jaa76+xRLLPlkcj5nkO800qVUxcIGrrIOQTL\
+    \ iyGyAGmSLPPm/39i07m+ytaTQ9z0o4YeEJMcoLMyEbDxjKBwMztjDAHjMigqVPJonypFko3RRiuj\
+    \ gInJ4SI4FQVjeH90MxyhlaOw0EYmedCaohsngkbWrCsT\n-----END CERTIFICATE-----"
+  nameIdFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+  limitSelfRegistration: false
+  customIconUrl: ""
+  signAuthnRequests: false
+  requireSignedResponses: true
+  requireEncryptedResponses: false
+  spCertificate: ""
+  spPrivateKey: ""
+  digestAlgorithm: "SHA-1"
+  signatureAlgorithm: "RSA-SHA1"
+  attributeMappings:
+    username:
+    - "mail"
+    - "email"
+    email:
+    - "mail"
+    - "email"
+    firstName:
+    - "givenName"
+    lastName:
+    - "sn"
+  requestedAttributes:
+    username:
+      name: "mail"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    email:
+      name: "mail"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    firstName:
+      name: "givenName"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+    lastName:
+      name: "sn"
+      format: "urn:oasis:names:tc:SAML:2.0:attrname-format:basic"
+  enabled: true
